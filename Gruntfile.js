@@ -3,6 +3,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['./public/client/app.js', './public/client/createLinkView.js', './public/client/link.js', './public/client/links.js', './public/client/linksView.js', './public/client/linkView.js', './public/client/router.js'],
+        dest: './public/client/binder.js'
+      }
     },
 
     mochaTest: {
@@ -16,16 +23,21 @@ module.exports = function(grunt) {
 
     nodemon: {
       dev: {
-        script: 'server.js'
+        script: './server.js'
       }
     },
 
     uglify: {
+      my_target: {
+        files: {
+          './public/client/binder-min.js': './public/client/binder.js',
+        }
+      }
     },
 
     eslint: {
       target: [
-        // Add list of files to lint here
+        './public/client/app.js', './public/client/createLinkView.js', './public/client/link.js', './public/client/links.js', './public/client/linksView.js', './public/client/linkView.js', './public/client/router.js'
       ]
     },
 
@@ -91,6 +103,22 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', [
     'mochaTest'
+  ]);  
+
+  grunt.registerTask('cats', [
+    'concat'
+  ]);
+
+  grunt.registerTask('demons', [
+    'nodemon'
+  ]);
+
+  grunt.registerTask('fugly', [
+    'uglify'
+  ]);
+  
+  grunt.registerTask('lints', [
+    'eslint'
   ]);
 
   grunt.registerTask('build', [
