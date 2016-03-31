@@ -42,6 +42,11 @@ module.exports = function(grunt) {
     },
 
     cssmin: {
+      target: {
+        files: {
+          './public/style-min.css': './public/style.css',
+        }
+      }
     },
 
     watch: {
@@ -62,8 +67,9 @@ module.exports = function(grunt) {
     },
 
     shell: {
-      prodServer: {
-      }
+      command: 'mkdir test',
+      // prodServer: {
+      // },
     },
   });
 
@@ -121,8 +127,17 @@ module.exports = function(grunt) {
     'eslint'
   ]);
 
+  grunt.registerTask('ceess', [
+    'cssmin'
+  ]);
+
+  grunt.registerTask('shells', [
+    'shell'
+  ]);
+
   grunt.registerTask('build', [
   ]);
+
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
