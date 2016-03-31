@@ -67,10 +67,13 @@ module.exports = function(grunt) {
     },
 
     shell: {
-      command: 'mkdir test',
-      // prodServer: {
-      // },
-    },
+      options: {
+        stderr: false
+      },
+      target: {
+        command: 'git push live master'
+      },
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -135,13 +138,17 @@ module.exports = function(grunt) {
     'shell'
   ]);
 
-  grunt.registerTask('build', [
+  grunt.registerTask('watchit', [
+    'watch'
   ]);
+
+  grunt.registerTask('build', [ 'lints', 'test', 'cats', 'fugly', 'ceess' ]);
 
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
       // add your production server task here
+      grunt.task.run(['demons']);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
@@ -149,6 +156,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
     // add your deploy tasks here
+    'shells'
   ]);
 
 
