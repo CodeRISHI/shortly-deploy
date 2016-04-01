@@ -3,7 +3,7 @@ var express = require('express');
 var expect = require('chai').expect;
 var app = require('../server-config.js');
 
-var db = require('../app/config');
+var db = require('../app/mconfig');
 var User = require('../app/models/user');
 var Link = require('../app/models/link');
 
@@ -20,10 +20,20 @@ describe('', function() {
       .end(function(err, res) {
 
         // Delete objects from db so they can be created later for the test
-        Link.remove({url: 'http://www.roflzoo.com/'}).exec();
-        User.remove({username: 'Savannah'}).exec();
-        User.remove({username: 'Phillip'}).exec();
-
+        db.Url.findOneAndRemove({url: 'http://www.roflzoo.com/'}, function(err) {
+          if (err) {
+            throw err;
+          }
+          console.log('Url Deleted!');
+        });
+        db.User.findOneAndRemove({username: 'Savannah'}, function(err) {
+          if (err) { throw err; }
+          console.log('User found and deleted!');
+        });
+        db.User.findOneAndRemove({username: 'Phillip'}, function(err) {
+          if (err) { throw err; }
+          console.log('User found and deleted!');
+        });
         done();
       });
   });
@@ -61,7 +71,7 @@ describe('', function() {
             'url': 'http://www.roflzoo.com/'})
           .expect(200)
           .expect(function(res) {
-            Link.findOne({'url': 'http://www.roflzoo.com/'})
+            db.Url.findOne({'url': 'http://www.roflzoo.com/'})
               .exec(function(err, link) {
                 if (err) { console.log(err); }
                 expect(link.url).to.equal('http://www.roflzoo.com/');
@@ -77,7 +87,7 @@ describe('', function() {
             'url': 'http://www.roflzoo.com/'})
           .expect(200)
           .expect(function(res) {
-            Link.findOne({'url': 'http://www.roflzoo.com/'})
+            db.Url.findOne({'url': 'http://www.roflzoo.com/'})
               .exec(function(err, link) {
                 if (err) { console.log(err); }
                 expect(link.title).to.equal('Funny pictures of animals, funny dog pictures');
@@ -91,7 +101,7 @@ describe('', function() {
     describe('With previously saved urls: ', function() {
 
       beforeEach(function(done) {
-        link = new Link({
+        link = db.Url({
           url: 'http://www.roflzoo.com/',
           title: 'Funny pictures of animals, funny dog pictures',
           baseUrl: 'http://127.0.0.1:4568',
@@ -179,7 +189,7 @@ describe('', function() {
           'password': 'Svnh' })
         .expect(302)
         .expect(function() {
-          User.findOne({'username': 'Svnh'})
+          db.User.findOne({'username': 'Svnh'})
             .exec(function(err, user) {
               expect(user.username).to.equal('Svnh');
             });
@@ -208,7 +218,7 @@ describe('', function() {
   describe('Account Login:', function() {
 
     beforeEach(function(done) {
-      new User({
+      db.User({
         'username': 'Phillip',
         'password': 'Phillip'
       }).save(function() {
